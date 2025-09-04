@@ -1,13 +1,13 @@
-import axios, { all } from "axios";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { axiosInstance } from "../config/axiosInstance";
 
 const HomePage = () => {
   const [allProducts, setAllProducts] = useState(null);
 
   let fetchAllProducts = async () => {
     try {
-      let response = await axios.get("http://localhost:3000/api/products");
+      let response = await axiosInstance.get("/products");
       if (response) {
         setAllProducts(response.data.products);
       }
