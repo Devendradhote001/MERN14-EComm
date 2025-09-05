@@ -9,7 +9,7 @@ export const registerUser = async (data) => {
       return newUser.data.user;
     }
   } catch (error) {
-    console.log("error in registration", errors);
+    console.log("error in registration", error);
   }
 };
 

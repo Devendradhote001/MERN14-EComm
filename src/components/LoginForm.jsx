@@ -1,8 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { loginUser } from "../apis/AuthApis";
+import { useNavigate } from "react-router";
 
 const LoginForm = ({ setFlag }) => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -12,7 +15,9 @@ const LoginForm = ({ setFlag }) => {
   const onSubmit = async (data) => {
     try {
       let loggedinUser = await loginUser(data);
-      console.log(loggedinUser);
+      if (loggedinUser) {
+        navigate("/");
+      }
     } catch (error) {
       console.log("error in login form", error);
     }
