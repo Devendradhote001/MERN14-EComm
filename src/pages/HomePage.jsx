@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { axiosInstance } from "../config/axiosInstance";
+import { fetchAllProducts } from "../apis/ProductApis";
 
 const HomePage = () => {
   const [allProducts, setAllProducts] = useState(null);
 
-  let fetchAllProducts = async () => {
+  let getAllProducts = async () => {
     try {
-      let response = await axiosInstance.get("/products");
+      let response = await fetchAllProducts();
       if (response) {
-        setAllProducts(response.data.products);
+        console.log("res-->", response);
+        setAllProducts(response);
       }
     } catch (error) {
       console.log("error while fetching products data", error);
@@ -17,7 +19,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchAllProducts();
+    getAllProducts();
   }, []);
 
   return (
@@ -27,6 +29,7 @@ const HomePage = () => {
         {allProducts?.map((product) => (
           <ProductCard
             key={product._id || product.title}
+            id={product._id}
             title={product.title}
             price={product.price}
             images={product.images}

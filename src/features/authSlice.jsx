@@ -5,11 +5,13 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     isLoggedIn: false,
+    isLoading: true,
   },
   reducers: {
     addUser: (state, action) => {
       state.user = action.payload;
       state.isLoggedIn = true;
+      state.isLoading = false;
     },
     removeUser: (state) => {
       state.user = null;
