@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router";
 import Searchbar from "./Searchbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../apis/AuthApis";
+import { removeUser } from "../features/authSlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
   return (
     <nav className="bg-white shadow shadow-md sticky top-0 z-30">
       <div className="max-w-7xl mx-auto px-4">
@@ -46,9 +49,34 @@ const Navbar = () => {
                 Login
               </button>
             )}
-            <button className="ml-2 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">
-              Become a Seller
-            </button>
+            {user?.role === "seller" ? (
+              <button
+                onClick={() => navigate("/seller")}
+                className="ml-2 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                Sell
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/auth")}
+                className="ml-2 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                Become a Seller
+              </button>
+            )}
+
+            {user ? (
+              <button
+                onClick={async () => {
+                  await logoutUser();
+                  dispatch(removeUser());
+                  navigate("/auth");
+                }}
+                className="ml-2 px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

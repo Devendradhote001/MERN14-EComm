@@ -17,7 +17,7 @@ const App = () => {
           dispatch(addUser(me?.data?.user));
         }
       } catch (error) {
-        console.log("errro in / me router");
+        console.log("error in / me router");
       }
     })();
   }, []);

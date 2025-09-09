@@ -1,8 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../apis/AuthApis";
+import { useSelector } from "react-redux";
+import { registerSeller } from "../apis/SellerApis";
+import { useNavigate } from "react-router";
 
 const RegisterForm = ({ setFlag }) => {
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -10,6 +16,7 @@ const RegisterForm = ({ setFlag }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    console.log("-------->", data.role);
     try {
       let newUserObj = {
         username: data.username,
@@ -21,8 +28,13 @@ const RegisterForm = ({ setFlag }) => {
         },
       };
 
-      let user = await registerUser(newUserObj);
-      console.log(user);
+      if (data.role === "seller") {
+        let res = await registerSeller();
+        console.log(res);
+        navigate("/seller");
+      } else {
+        let user = await registerUser(newUserObj);
+      }
     } catch (error) {
       console.log("error in registration form", error);
     }
@@ -40,6 +52,8 @@ const RegisterForm = ({ setFlag }) => {
         <div className="w-1/2">
           <input
             type="text"
+            defaultValue={user.fullName.firstName}
+            disabled={user ? true : false}
             placeholder="First Name"
             {...register("firstName", { required: "First name is required" })}
             className={`w-full px-4 py-2 rounded border ${
@@ -55,6 +69,8 @@ const RegisterForm = ({ setFlag }) => {
         <div className="w-1/2">
           <input
             type="text"
+            defaultValue={user.fullName.lastName}
+            disabled={user ? true : false}
             placeholder="Last Name"
             {...register("lastName")}
             className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-600"
@@ -64,6 +80,8 @@ const RegisterForm = ({ setFlag }) => {
       <div>
         <input
           type="text"
+          defaultValue={user.username}
+          disabled={user ? true : false}
           placeholder="Username"
           {...register("username", { required: "Username is required" })}
           className={`w-full px-4 py-2 rounded border ${
@@ -79,6 +97,8 @@ const RegisterForm = ({ setFlag }) => {
       <div>
         <input
           type="email"
+          defaultValue={user.email}
+          disabled={user ? true : false}
           placeholder="Email"
           {...register("email", {
             required: "Email is required",
@@ -98,6 +118,8 @@ const RegisterForm = ({ setFlag }) => {
       <div>
         <input
           type="password"
+          defaultValue={user.password}
+          disabled={user ? true : false}
           placeholder="Password"
           {...register("password", {
             required: "Password is required",

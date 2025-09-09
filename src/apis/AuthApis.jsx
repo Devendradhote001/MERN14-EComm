@@ -24,3 +24,14 @@ export const loginUser = async (data) => {
     console.log("error in Login", errors);
   }
 };
+
+export const logoutUser = async () => {
+  try {
+    let res = await axiosInstance.get("/auth/user/logout");
+    if (res) {
+      return res.data.message;
+    }
+  } catch (error) {
+    console.log("error in logout", error);
+  }
+};
