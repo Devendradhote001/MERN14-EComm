@@ -34,6 +34,9 @@ const RegisterForm = ({ setFlag }) => {
         navigate("/seller");
       } else {
         let user = await registerUser(newUserObj);
+        if (user) {
+          navigate("/");
+        }
       }
     } catch (error) {
       console.log("error in registration form", error);
@@ -52,7 +55,7 @@ const RegisterForm = ({ setFlag }) => {
         <div className="w-1/2">
           <input
             type="text"
-            defaultValue={user.fullName.firstName}
+            defaultValue={user?.fullName?.firstName}
             disabled={user ? true : false}
             placeholder="First Name"
             {...register("firstName", { required: "First name is required" })}
@@ -69,7 +72,7 @@ const RegisterForm = ({ setFlag }) => {
         <div className="w-1/2">
           <input
             type="text"
-            defaultValue={user.fullName.lastName}
+            defaultValue={user?.fullName?.lastName}
             disabled={user ? true : false}
             placeholder="Last Name"
             {...register("lastName")}
@@ -80,7 +83,7 @@ const RegisterForm = ({ setFlag }) => {
       <div>
         <input
           type="text"
-          defaultValue={user.username}
+          defaultValue={user?.username}
           disabled={user ? true : false}
           placeholder="Username"
           {...register("username", { required: "Username is required" })}
@@ -97,7 +100,7 @@ const RegisterForm = ({ setFlag }) => {
       <div>
         <input
           type="email"
-          defaultValue={user.email}
+          defaultValue={user?.email}
           disabled={user ? true : false}
           placeholder="Email"
           {...register("email", {
@@ -118,7 +121,7 @@ const RegisterForm = ({ setFlag }) => {
       <div>
         <input
           type="password"
-          defaultValue={user.password}
+          defaultValue={user?.password}
           disabled={user ? true : false}
           placeholder="Password"
           {...register("password", {

@@ -21,3 +21,16 @@ export const fetchProductDetail = async (id) => {
     console.log("error in product detail", error);
   }
 };
+
+export const createProduct = async (data) => {
+  try {
+    let response = await axiosInstance.post("/products", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    if (response) {
+      console.log(response);
+    }
+  } catch (error) {
+    console.log("error in creating products..", error);
+  }
+};
