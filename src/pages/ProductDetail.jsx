@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useSelector } from "react-redux";
+
 import {
   Heart,
   Star,
@@ -10,13 +12,18 @@ import {
   Shield,
   Truck,
   RotateCcw,
+  Currency,
+  Contact,
 } from "lucide-react";
 import { fetchProductDetail } from "../apis/ProductApis";
+import { createOrder } from "../apis/paymentApis";
+import { axiosInstance } from "../config/axiosInstance";
 // import { axiosInstance } from "../config/axiosInstance";
 // import { fetchProductDetail } from "../apis/ProductApis";
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { user } = useSelector((state) => state.auth);
   const [productDets, setProductDets] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -49,6 +56,54 @@ const ProductDetail = () => {
       setQuantity((prev) => prev + 1);
     } else if (action === "decrease" && quantity > 1) {
       setQuantity((prev) => prev - 1);
+    }
+  };
+
+  const handlePayment = async () => {
+    try {
+      const orderData = {
+        amount: productDets?.price?.amount,
+        currency: productDets?.price?.currency,
+        product_id: id,
+        user_id: user._id,
+      };
+
+      let res = await createOrder(orderData);
+      if (res) {
+        const options = {
+          key: res.data.razorpay_key,
+          order_id: res.data.order.order_id,
+          name: "E-comm app",
+          description: "Product purchasing",
+          amount: productDets?.price?.amount,
+          currency: productDets?.price?.currency,
+          handler: async (response) => {
+            // call verify api
+            let res = await axiosInstance.post(
+              "/payment/verify-payment",
+              response
+            );
+            if (res) {
+              alert("Payment successfull");
+            } else {
+              alert("bhaag jaa nahi hua ");
+            }
+          },
+          prefill: {
+            name: "devendra",
+            contact: 1234567890,
+            email: "raju@gmail.com",
+          },
+          theme: {
+            color: "blue",
+          },
+        };
+
+        const rzps = new window.Razorpay(options);
+        rzps.open();
+      }
+    } catch (error) {
+      console.log("me page me hu-->", error);
     }
   };
 
@@ -229,7 +284,10 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                <button className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold hover:bg-gray-800 transition-colors">
+                <button
+                  onClick={handlePayment}
+                  className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+                >
                   Buy Now
                 </button>
               </div>
