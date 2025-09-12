@@ -69,6 +69,7 @@ const ProductDetail = () => {
       };
 
       let res = await createOrder(orderData);
+      var order_id = res.data.order.order_id;
       if (res) {
         const options = {
           key: res.data.razorpay_key,
@@ -78,11 +79,15 @@ const ProductDetail = () => {
           amount: productDets?.price?.amount,
           currency: productDets?.price?.currency,
           handler: async (response) => {
+            let dets = {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              order_id: order_id,
+            };
+            console.log("response after pay-0>", response);
             // call verify api
-            let res = await axiosInstance.post(
-              "/payment/verify-payment",
-              response
-            );
+            let res = await axiosInstance.post("/payment/verify-payment", dets);
             if (res) {
               alert("Payment successfull");
             } else {
